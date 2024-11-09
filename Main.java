@@ -24,7 +24,6 @@ public class Main {
                     int truck_limit = Integer.parseInt(st.nextToken());
                     parkingSystem.addParkingLot(capacity_constraint, truck_limit);
 
-                    System.out.println(parkingSystem.getParkingLot(capacity_constraint));
                 }
 
                 else if (command.equals("add_truck")) {
@@ -53,17 +52,12 @@ public class Main {
                     int capacity_constraint = Integer.parseInt(st.nextToken());
 
                     // Önce kapasiteye göre uygun ParkingLot'u al
-                    ParkingLot readyLot = parkingSystem.getParkingLot(capacity_constraint);
+                    ParkingLot readyLot = parkingSystem.findReadyLot(capacity_constraint);
 
-                    // Eğer uygun ParkingLot bulunamazsa, kapasiteye göre sıradaki uygun olan ParkingLot'u bul
-                    if (readyLot == null) {
-                        readyLot = parkingSystem.findReadyLot(capacity_constraint);
-                    }
-
-                    // Hala uygun bir ParkingLot bulunamazsa -1 yazdır
                     if (readyLot == null) {
                         writer.println(-1);
-                    } else {
+                    }
+                    else {
                         // ParkingSystem'in ready fonksiyonundan alınan sonucu yazdır
                         String id = parkingSystem.ready(readyLot);
                         if (id.equals("-1")) {
