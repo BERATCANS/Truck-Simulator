@@ -291,6 +291,24 @@ class AVLTree {
             return predecessor != null ? predecessor.element : null; // Elde edilen ebeveyn, in-order predecessor'dır
         }
     }
+    public ParkingLot findInOrderPredecessor(int capacity) {
+        Node current = rootNode;
+        Node predecessor = null;
+
+        while (current != null) {
+            if (capacity <= current.element.getCapacity()) {
+                // Eğer mevcut düğüm kapasitesi verilen kapasiteye eşit veya büyükse sola git
+                current = current.leftChild;
+            } else {
+                // Eğer mevcut düğüm kapasitesi verilen kapasiteden küçükse, bu bir adaydır
+                predecessor = current;
+                // Daha büyük bir kapasite için sağa git
+                current = current.rightChild;
+            }
+        }
+
+        return predecessor != null ? predecessor.element : null; // Bulunan predecessor'ı veya null döndür
+    }
     public ParkingLot findInOrderSuccessor(ParkingLot parkingLot) {
         if (parkingLot == null) {
             return null; // Eğer parkingLot null ise, null döndür
@@ -327,6 +345,25 @@ class AVLTree {
             return successor != null ? successor.element : null; // Elde edilen ebeveyn, in-order successor'dır
         }
     }
+    public ParkingLot findInOrderSuccessor(int capacity) {
+        Node current = rootNode;
+        Node successor = null;
+
+        while (current != null) {
+            if (capacity >= current.element.getCapacity()) {
+                // Eğer mevcut düğüm kapasitesi verilen kapasiteye eşit veya küçükse sağa git
+                current = current.rightChild;
+            } else {
+                // Eğer mevcut düğüm kapasitesi verilen kapasiteden büyükse, bu bir adaydır
+                successor = current;
+                // Daha küçük bir kapasite aramak için sola git
+                current = current.leftChild;
+            }
+        }
+
+        return successor != null ? successor.element : null; // Bulunan successor'ı veya null döndür
+    }
+
 
 
     // Helper method to find the node corresponding to the ParkingLot object
@@ -369,27 +406,7 @@ class AVLTree {
         }
     }
 
-    public ParkingLot findSmallerParkingLot(int capacity_constraint){
-        return findSmallerParkingLot(rootNode, capacity_constraint, null);
-    }
-    private ParkingLot findSmallerParkingLot(Node node, int capacity_constraint, ParkingLot closestSmallerLot) {
-        if (node == null) {
-            return closestSmallerLot;
-        }
 
-        // Eğer geçerli düğümün kapasitesi capacity_constraint'ten küçükse
-        if (node.element.getCapacity() < capacity_constraint) {
-            // Ready listesi dolu değilse, closestSmallerLot olarak kaydet
-            if (!node.element.isFull()) {
-                closestSmallerLot = node.element;
-            }
-            // Daha büyük kapasitelerde başka uygun bir küçük lot olup olmadığını bulmak için sağ alt ağaca git
-            closestSmallerLot = findSmallerParkingLot(node.rightChild, capacity_constraint, closestSmallerLot);
-        }
-
-        // Kapasite büyükse veya sağ alt ağaçta uygun lot yoksa, sol alt ağaca git
-        return findSmallerParkingLot(node.leftChild, capacity_constraint, closestSmallerLot);
-    }
 
 }
 
