@@ -19,19 +19,38 @@ public class ParkingSystem {
     public ParkingLot getParkingLot(int capacity) {
         return parkingLots.search(capacity);
     }
+    public ParkingLot findParkingLot(int capacity){
+        ParkingLot smallerLot = parkingLots.findInOrderPredecessor(capacity);
+        if(smallerLot == null){
+            return null;
+        }
+        while(smallerLot.isFull()){
+            smallerLot = parkingLots.findInOrderPredecessor(smallerLot);
+            if(smallerLot == null){
+                return null;
+            }
+        }
+        return smallerLot;
+    }
 
     public ParkingLot findReadyLot(int capacity){
-        return parkingLots.findReadyParkingLot(capacity);
+        ParkingLot readyLot = parkingLots.findInOrderSuccessor(capacity);
+        if (readyLot == null){
+            return null;
+        }
+        while (!readyLot.isFull()){
+            readyLot = parkingLots.findInOrderSuccessor(readyLot);
+            if (readyLot == null){
+                return null;
+            }
+        }
+        return readyLot;
     }
-    public ParkingLot findParkingLot(int capacity){
-        return parkingLots.findSmallerParkingLot(capacity);
-    }
+
     public String ready(ParkingLot readyLot) {
         MyQueue waitingQueue = readyLot.getTruck_list_waiting();
         ParkingLot tempLot = readyLot;
-        if(waitingQueue.isEmpty() && readyLot.getTruck_limit()==readyLot.getTruck_list_ready().size()){
-            return "-1";
-        }
+
         while (waitingQueue.isEmpty()) {
             ParkingLot nextLot = parkingLots.findInOrderSuccessor(tempLot);
             if (nextLot == null) {
