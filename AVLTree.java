@@ -91,7 +91,6 @@ class AVLTree {
         } else if (capacity > node.element.getCapacity()) {
             node.rightChild = delete(capacity, node.rightChild);
         } else {
-            node.element.clearTrucks();
             // Düğüm bulundu, silme işlemi
             if (node.leftChild == null && node.rightChild == null) {
                 // Hiç çocuk yoksa, bu düğüm silinebilir
@@ -241,7 +240,6 @@ class AVLTree {
         }
     }
 
-    // Post-order traversali
     public void postorderTraversal() {
         postorderTraversal(rootNode);
     }
@@ -256,41 +254,33 @@ class AVLTree {
 
     // In-order predecessor bulma
     public ParkingLot findInOrderPredecessor(ParkingLot parkingLot) {
-        if (parkingLot == null) {
-            return null; // Eğer parkingLot null ise, null döndür
+        Node predecessor = null;
+        Node currentNode = rootNode;
+
+        // İlk olarak, parkingLot düğümünü ve in-order öncülünü bulmaya çalışıyoruz
+        while (currentNode != null) {
+            if (parkingLot.getCapacity() > currentNode.element.getCapacity()) {
+                // Geçici predecessor olarak kaydet
+                predecessor = currentNode;
+                currentNode = currentNode.rightChild; // Büyük değerler için sağa git
+            } else if (parkingLot.getCapacity() < currentNode.element.getCapacity()) {
+                currentNode = currentNode.leftChild; // Küçük değerler için sola git
+            } else {
+                break; // Düğümü bulduğumuzda döngüden çık
+            }
         }
 
-        // Mevcut düğümü bul
-        Node currentNode = findNode(rootNode, parkingLot);
-        if (currentNode == null) {
-            return null; // Eğer belirtilen parkingLot ağacın içinde yoksa, null döndür
-        }
-
-        // Eğer sol alt ağacı varsa, oradaki en sağ düğümü bul
-        if (currentNode.leftChild != null) {
-            Node predecessor = currentNode.leftChild;
+        // Eğer sol alt ağaç varsa, sol alt ağacın en sağ düğümünü bul
+        if (currentNode != null && currentNode.leftChild != null) {
+            predecessor = currentNode.leftChild;
             while (predecessor.rightChild != null) {
-                predecessor = predecessor.rightChild; // Sol alt ağacın en sağ düğümünü bul
+                predecessor = predecessor.rightChild; // Sol alt ağacın en sağ düğümüne git
             }
-            return predecessor.element; // ParkingLot nesnesini döndür
-        } else {
-            // Sol çocuk yoksa, ata düğümlere bakmamız gerekir
-            Node current = rootNode;
-            Node predecessor = null;
-
-            while (current != null) {
-                if (parkingLot.getCapacity() < current.element.getCapacity()) {
-                    current = current.leftChild; // Eğer mevcut düğüm küçükse sola git
-                } else if (parkingLot.getCapacity() > current.element.getCapacity()) {
-                    predecessor = current; // Geçici olarak mevcut düğümü ebeveyn olarak kaydet
-                    current = current.rightChild; // Eğer mevcut düğüm büyükse sağa git
-                } else {
-                    break; // Eğer düğüm bulunduysa döngüden çık
-                }
-            }
-            return predecessor != null ? predecessor.element : null; // Elde edilen ebeveyn, in-order predecessor'dır
         }
+
+        return predecessor != null ? predecessor.element : null; // İn-order öncülü döndür veya null
     }
+
     public ParkingLot findInOrderPredecessor(int capacity) {
         Node current = rootNode;
         Node predecessor = null;
@@ -310,41 +300,33 @@ class AVLTree {
         return predecessor != null ? predecessor.element : null; // Bulunan predecessor'ı veya null döndür
     }
     public ParkingLot findInOrderSuccessor(ParkingLot parkingLot) {
-        if (parkingLot == null) {
-            return null; // Eğer parkingLot null ise, null döndür
+        Node successor = null;
+        Node currentNode = rootNode;
+
+        // İlk olarak, parkingLot düğümünü ve in-order ardılı bulmaya çalışıyoruz
+        while (currentNode != null) {
+            if (parkingLot.getCapacity() < currentNode.element.getCapacity()) {
+                // Geçici successor olarak kaydet
+                successor = currentNode;
+                currentNode = currentNode.leftChild; // Küçük değerler için sola git
+            } else if (parkingLot.getCapacity() > currentNode.element.getCapacity()) {
+                currentNode = currentNode.rightChild; // Büyük değerler için sağa git
+            } else {
+                break; // Düğümü bulduğumuzda döngüden çık
+            }
         }
 
-        // Mevcut düğümü bul
-        Node currentNode = findNode(rootNode, parkingLot);
-        if (currentNode == null) {
-            return null; // Eğer belirtilen parkingLot ağacın içinde yoksa, null döndür
-        }
-
-        // Eğer sağ alt ağacı varsa, oradaki en sol düğümü bul
-        if (currentNode.rightChild != null) {
-            Node successor = currentNode.rightChild;
+        // Eğer sağ alt ağaç varsa, sağ alt ağacın en sol düğümünü bul
+        if (currentNode != null && currentNode.rightChild != null) {
+            successor = currentNode.rightChild;
             while (successor.leftChild != null) {
-                successor = successor.leftChild; // Sağ alt ağacın en sol düğümünü bul
+                successor = successor.leftChild; // Sağ alt ağacın en sol düğümüne gidin
             }
-            return successor.element; // ParkingLot nesnesini döndür
-        } else {
-            // Sağ çocuk yoksa, ata düğümlere bakmamız gerekir
-            Node current = rootNode;
-            Node successor = null;
-
-            while (current != null) {
-                if (parkingLot.getCapacity() < current.element.getCapacity()) {
-                    successor = current; // Geçici olarak mevcut düğümü ebeveyn olarak kaydet
-                    current = current.leftChild; // Eğer mevcut düğüm büyükse sola git
-                } else if (parkingLot.getCapacity() > current.element.getCapacity()) {
-                    current = current.rightChild; // Eğer mevcut düğüm küçükse sağa git
-                } else {
-                    break; // Eğer düğüm bulunduysa döngüden çık
-                }
-            }
-            return successor != null ? successor.element : null; // Elde edilen ebeveyn, in-order successor'dır
         }
+
+        return successor != null ? successor.element : null; // İn-order ardılı döndür veya null
     }
+
     public ParkingLot findInOrderSuccessor(int capacity) {
         Node current = rootNode;
         Node successor = null;
@@ -363,51 +345,6 @@ class AVLTree {
 
         return successor != null ? successor.element : null; // Bulunan successor'ı veya null döndür
     }
-
-
-
-    // Helper method to find the node corresponding to the ParkingLot object
-    private Node findNode(Node node, ParkingLot parkingLot) {
-        if (node == null) {
-            return null;
-        }
-        int capacity = parkingLot.getCapacity();
-        if (capacity < node.element.getCapacity()) {
-            return findNode(node.leftChild, parkingLot);
-        } else if (capacity > node.element.getCapacity()) {
-            return findNode(node.rightChild, parkingLot);
-        } else {
-            return node; // Düğüm bulundu
-        }
-    }
-    public ParkingLot findReadyParkingLot(int capacity_constraint) {
-        return findReadyParkingLot(rootNode, capacity_constraint, null);
-    }
-
-    private ParkingLot findReadyParkingLot(Node node, int capacity_constraint, ParkingLot closestLargerLot) {
-        if (node == null) {
-            return closestLargerLot;
-        }
-
-        // Eğer geçerli düğümün kapasitesi capacity_constraint'ten büyükse, bu düğüm geçerli en yakın lot olabilir
-        if (node.element.getCapacity() > capacity_constraint) {
-            // Eğer ready listesi dolu değilse, closestLargerLot olarak kaydet
-            if (!node.element.isFullReady()) {
-                closestLargerLot = node.element;
-                // Daha küçük kapasiteli bir lot olup olmadığını bulmak için sol alt ağaca git
-                return findReadyParkingLot(node.leftChild, capacity_constraint, closestLargerLot);
-            } else {
-                // Eğer ready listesi doluysa, uygun bir lot bulmak için sol alt ağaca gitmeye devam et
-                return findReadyParkingLot(node.leftChild, capacity_constraint, closestLargerLot);
-            }
-        } else {
-            // Eğer kapasite küçükse, daha büyük kapasitelere gitmek için sağ alt ağacı araştır
-            return findReadyParkingLot(node.rightChild, capacity_constraint, closestLargerLot);
-        }
-    }
-
-
-
 }
 
 
