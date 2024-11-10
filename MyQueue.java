@@ -1,3 +1,4 @@
+
 public class MyQueue {
 
     private int queueLength ;
@@ -33,23 +34,23 @@ public class MyQueue {
 
 
     void enQueue(Truck itemValue) {
-        if(isFull()){
-            System.out.println("Queue is full");
-        } else if(front == -1 && back == -1){
-            front = back = 0;
-            items[back] = itemValue;
-        } else{
-            back++;
-            items[back] = itemValue;
+        if(!isFull()) {
+            if (front == -1 && back == -1) {
+                front = back = 0;
+                items[back] = itemValue;
+            } else {
+                back++;
+                items[back] = itemValue;
+            }
         }
     }
 
     Truck deQueue(){
         if(isEmpty()){
-            System.out.println("Queue is empty. Nothing to dequeue");
             return null;
         } else {
             Truck dequeuedItem = items[front];
+            items[front] = null;
             if (front == back) {
                 front = back = -1;
             } else {
@@ -62,18 +63,13 @@ public class MyQueue {
     void display(){
         int i;
 
-        if(isEmpty()){
-            System.out.println("Queue is empty");
-        } else {
+        if(!isEmpty()){
             for(i = front; i <= back; i++){
                 System.out.println(items[i]);
             }
         }
     }
 
-    void peak(){
-        System.out.println("Front value is: " + items[front]);
-    }
     void clear() {
         // Set all elements in the array to null
         for (int i = 0; i < queueLength; i++) {
@@ -82,7 +78,6 @@ public class MyQueue {
         // Reset front and back indices
         front = -1;
         back = -1;
-        System.out.println("Queue has been cleared.");
     }
 
 }
