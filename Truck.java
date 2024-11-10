@@ -17,7 +17,7 @@ public class Truck {
         this.id = id;
     }
 
-    public double getCapacity() {
+    public int getCapacity() {
         return capacity;
     }
 
@@ -25,12 +25,12 @@ public class Truck {
         this.capacity = capacity;
     }
 
-    public double getCapacityConstraint() {
+    public int getCapacityConstraint() {
         return capacityConstraint;
     }
 
     public void setCapacityConstraint(int capacityConstraint) {
-        this.capacityConstraint = capacity - capacityConstraint;
+        this.capacityConstraint = capacityConstraint;
     }
 
     @Override
