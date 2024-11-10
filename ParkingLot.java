@@ -1,5 +1,3 @@
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class ParkingLot {
     private final int capacity_constraint;
@@ -17,11 +15,10 @@ public class ParkingLot {
     }
 
     public boolean addTruck(Truck truck) {
-        if (truck_list_waiting.size() + truck_list_ready.size() < truck_limit) {
+        if (truck_list_waiting.size() + truck_list_ready.size() <= truck_limit) {
             truck_list_waiting.enQueue(truck);
             return true;
         } else {
-            System.out.println("Park alanı dolu: Kapasite = " + truck_limit);
             return false;
         }
     }
@@ -53,6 +50,16 @@ public class ParkingLot {
     }
     public boolean isFullReady(){
         return truck_list_ready.size() == truck_limit;
+    }
+
+    @Override
+    public String toString() {
+        return "ParkingLot{" +
+                "capacity_constraint=" + capacity_constraint +
+                ", truck_limit=" + truck_limit +
+                ", truck_list_waiting=" + truck_list_waiting+
+                ", truck_list_ready=" + truck_list_ready +
+                '}';
     }
 }
 
